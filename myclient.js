@@ -2,9 +2,9 @@ window.onload = init;
 
 var mymap;
 const HttpFlight = new XMLHttpRequest();
-var markers = [];
+var sources = [];
 
-updatefrequency = 5000;
+updatefrequency = 1000;
 userLocation = [0.0, 0.0];
 
 
@@ -49,6 +49,7 @@ function startMap() {
 
 //Initalizes connection to API
 function startDataStream() {
+    console.log(sources);
     var urlFlight = "http://dronetracker.tk:5000/api/flights";
     HttpFlight.open("GET", urlFlight);
     HttpFlight.send();
@@ -71,7 +72,6 @@ HttpFlight.onreadystatechange=(e)=> {
 
 
 function getLatestPosition(flightnumber) {
-    console.log(flightnumber);
     var urlPos = "http://dronetracker.tk:5000/api/flight/" + flightnumber + "/position_data";
     var HttpPosDat = new XMLHttpRequest();
     HttpPosDat.open("GET", urlPos);
@@ -89,13 +89,33 @@ function getLatestPosition(flightnumber) {
 	    var latitude = posDat[i].latitude;
 	    var longitude = posDat[i].longitude;
 	    var altitude = posDat[i].altitude;
-	    console.log(latitude + " " + longitude + " flightid" + flightId);
-	    addCoord(latitude, longitude);
+	    addCoord(flightId, latitude, longitude, altitude);
 	}
     }
 }
 
 
-function addCoord(latitude, longitude){
-    var marker = L.marker([longitude, latitude]).addTo(mymap);
+function addCoord(flightId, longitude, latitude, altitude){
+    var sourceExists = false;
+    var marker = L.marker([latitude, longitude]);
+    marker.addTo(mymap)
+    for(var i = 0; i < sources.length; i++){
+	if(flightId === sources[i].flightId) {
+	    mymap.removeLayer(sources[i].marker)
+	    sources[i].marker = marker;
+	    sourceExists = true;
+	    break;
+	}
+    }
+    if(sourceExists === false)
+	sources.push(new Source(flightId, altitude, marker));
+}
+
+
+class Source {
+    constructor(flightId, altitude, marker) {
+	this.flightId = flightId;
+	this.altitude = altitude;
+	this.marker = marker;
+    }
 }
