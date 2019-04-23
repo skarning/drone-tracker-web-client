@@ -8,7 +8,7 @@ updatefrequency = 1000;
 userLocation = [0.0, 0.0];
 
 
-//Sets timer for datastram and calls the map
+//Sets timer for datastream and calls the map
 function init() {
     var timer = setInterval("startDataStream()", updatefrequency);
     initMap();
@@ -49,13 +49,12 @@ function startMap() {
 
 //Initalizes connection to API
 function startDataStream() {
-    console.log(sources);
     var urlFlight = "http://dronetracker.tk:5000/api/flights";
     HttpFlight.open("GET", urlFlight);
     HttpFlight.send();
 }
 
-
+//Gets all flights
 HttpFlight.onreadystatechange=(e)=> {
     if(HttpFlight.readyState == 4 && HttpFlight.status == 200) {
 	var json = HttpFlight.responseText;
@@ -65,6 +64,7 @@ HttpFlight.onreadystatechange=(e)=> {
 	    var operatorId = flights[i].operator_id;
 	    var isActive = flights[i].is_active;
 	    var rpasId = flights[i].rpas_id;
+	    //Gets newest coordinates for each flight
 	    getLatestPosition(flightnumber)	
 	}
     }
@@ -97,8 +97,14 @@ function getLatestPosition(flightnumber) {
 
 function addCoord(flightId, longitude, latitude, altitude){
     var sourceExists = false;
-    var marker = L.marker([latitude, longitude]);
+    var droneIcon = getIcon();
+    var marker = L.marker([longitude, latitude], {icon: droneIcon});
+    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString());
+    marker.on('mouseover', function(){
+	marker.openPopup();
+    });
     marker.addTo(mymap)
+    addNoFlightZone();
     for(var i = 0; i < sources.length; i++){
 	if(flightId === sources[i].flightId) {
 	    mymap.removeLayer(sources[i].marker)
@@ -118,4 +124,29 @@ class Source {
 	this.altitude = altitude;
 	this.marker = marker;
     }
+}
+
+
+function getIcon() {
+    var icon = L.icon({
+    iconUrl: 'icons/drone1.svg',
+
+    iconSize:     [20, 45], // size of the icon
+    iconAnchor:   [10, 22], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+    return icon;
+}
+
+function addNoFlightZone() {
+    var polygon = L.polygon([
+	[59.131090, 11.355795],
+	[59.130055, 11.355827],
+	[59.130099, 11.354003],
+	[59.131233, 11.354314]
+    ]);
+
+    polygon.setStyle({color: 'red',
+		      fillColor: '#f03',
+		      fillOpacity: 0.1}).addTo(mymap);
 }
