@@ -54,6 +54,7 @@ function startDataStream() {
     HttpFlight.send();
 }
 
+
 //Gets all flights
 HttpFlight.onreadystatechange=(e)=> {
     if(HttpFlight.readyState == 4 && HttpFlight.status == 200) {
@@ -90,6 +91,7 @@ function getLatestPosition(flightnumber) {
 	    var longitude = posDat[i].longitude;
 	    var altitude = posDat[i].altitude;
 	    addCoord(flightId, latitude, longitude, altitude);
+      addPolyLinePath(posDat);
 	}
     }
 }
@@ -137,6 +139,19 @@ function getIcon() {
     });
     return icon;
 }
+
+
+function addPolyLinePath(flight) {
+  var latlngs=[];
+  var position;
+  for(i = 0; i < flight.length ;i++){
+    //document.getElementById("feedback").innerHTML += flight[i].latitude;
+    position = [flight[i].latitude, flight[i].longitude];
+    latlngs.push(position);
+  }
+var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
+}
+
 
 function addNoFlightZone() {
     var polygon = L.polygon([
