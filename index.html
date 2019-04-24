@@ -8,13 +8,30 @@
     <title>Dronetracker</title>
     <style>
       #mapid { height: 90%; }
-      #feedback {height: 10%;}
+      #columnLayout {margin-top: 10px;}
+      #feedback {margin: 2px 0px 0px 5px;}
+      .column {
+        float: left;
+      }
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
     </style
   </head>
   <body>
       <div id="mapid"></div>
-
-      <p id="feedback"></p>
+      <div id="columnLayout" class="row">
+        <div class="column">
+          <label><input id="enablePathCB "type="checkbox" value="Bike">
+          Enable flight path |
+          </label>
+        </div>
+        <div class="column">
+          <p id="feedback"></p>
+        </div>
+      </div>
   </body>
 
 </html>
