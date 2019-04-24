@@ -3,6 +3,7 @@ window.onload = init;
 var mymap;
 const HttpFlight = new XMLHttpRequest();
 var sources = [];
+var value = 5;
 
 updatefrequency = 1000;
 userLocation = [0.0, 0.0];
