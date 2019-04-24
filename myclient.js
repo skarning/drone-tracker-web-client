@@ -3,6 +3,7 @@ window.onload = init;
 var mymap;
 const HttpFlight = new XMLHttpRequest();
 var sources = [];
+var pathsAreActive = false;
 
 updatefrequency = 1000;
 userLocation = [0.0, 0.0];
@@ -92,8 +93,8 @@ function getLatestPosition(flightnumber) {
 	    var altitude = posDat[i].altitude;
 	    addCoord(flightId, latitude, longitude, altitude);
       addPolyLinePath(posDat);
-	}
-    }
+  	}
+  }
 }
 
 
@@ -141,15 +142,39 @@ function getIcon() {
 }
 
 
+//If the "Enable flight path" checkbox is unchecked, remove all polylines.
+function flighPathCbClick(cb) {
+  pathsAreActive = cb.checked;
+  if(cb.checked == false){
+    clearPolyLines();
+  }
+}
+
+
+function clearPolyLines() {
+    for(i in mymap._layers) {
+        if(mymap._layers[i]._path != undefined) {
+            try {
+                mymap.removeLayer(mymap._layers[i]);
+            }
+            catch(e) {
+                console.log("problem with " + e + mymap._layers[i]);
+            }
+        }
+    }
+}
+
+
 function addPolyLinePath(flight) {
   var latlngs=[];
-  var position;
-  for(i = 0; i < flight.length ;i++){
-    //document.getElementById("feedback").innerHTML += flight[i].latitude;
-    position = [flight[i].latitude, flight[i].longitude];
-    latlngs.push(position);
+  if(pathsAreActive == true){
+    var position;
+    for(i = 0; i < flight.length ;i++){
+      position = [flight[i].latitude, flight[i].longitude];
+      latlngs.push(position);
+    }
   }
-var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
+    var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
 }
 
 
