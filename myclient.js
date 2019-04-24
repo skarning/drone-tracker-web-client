@@ -3,7 +3,6 @@ window.onload = init;
 var mymap;
 const HttpFlight = new XMLHttpRequest();
 var sources = [];
-var value = 5;
 
 updatefrequency = 1000;
 userLocation = [0.0, 0.0];
@@ -25,7 +24,7 @@ function initMap() {
 //Gets IP-based location from user
 function getLocation() {
     if (navigator.geolocation)
-	navigator.geolocation.getCurrentPosition(formatLocation);	
+	navigator.geolocation.getCurrentPosition(formatLocation);
 }
 
 
@@ -66,7 +65,7 @@ HttpFlight.onreadystatechange=(e)=> {
 	    var isActive = flights[i].is_active;
 	    var rpasId = flights[i].rpas_id;
 	    //Gets newest coordinates for each flight
-	    getLatestPosition(flightnumber)	
+	    getLatestPosition(flightnumber)
 	}
     }
 }
