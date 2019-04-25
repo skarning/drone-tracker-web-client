@@ -5,13 +5,33 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
 	    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script src="myclient.js"></script>
+    <title>Dronetracker</title>
     <style>
-      #mapid { height: 100%; }
-    </style
+      #mapid { height: 90%; }
+      #columnLayout {margin-top: 10px;}
+      #feedback {margin: 2px 0px 0px 5px;}
+      .column {
+        float: left;
+      }
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    </style>
   </head>
   <body>
       <div id="mapid"></div>
-      <title>Dronetracker</title>
+      <div id="columnLayout" class="row">
+        <div class="column">
+          <label><input id="enablePathCB "type="checkbox" onclick='flighPathCbClick(this);'>
+          Enable flight path |
+          </label>
+        </div>
+        <div class="column">
+          <p id="feedback"></p>
+        </div>
+      </div>
   </body>
 
 </html>

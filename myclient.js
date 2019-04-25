@@ -3,6 +3,7 @@ window.onload = init;
 var mymap;
 const HttpFlight = new XMLHttpRequest();
 var sources = [];
+var pathsAreActive = false;
 
 updatefrequency = 1000;
 userLocation = [0.0, 0.0];
@@ -54,6 +55,7 @@ function startDataStream() {
     HttpFlight.send();
 }
 
+
 //Gets all flights
 HttpFlight.onreadystatechange=(e)=> {
     if(HttpFlight.readyState == 4 && HttpFlight.status == 200) {
@@ -65,13 +67,13 @@ HttpFlight.onreadystatechange=(e)=> {
 	    var isActive = flights[i].is_active;
 	    var rpasId = flights[i].rpas_id;
 	    //Gets newest coordinates for each flight
-	    getLatestPosition(flightnumber)
+	    getLatestPosition(flightnumber, operatorId, rpasId)
 	}
     }
 }
 
 
-function getLatestPosition(flightnumber) {
+function getLatestPosition(flightnumber, operatorId, rpasId) {
     var urlPos = "http://dronetracker.tk:5000/api/flight/" + flightnumber + "/position_data";
     var HttpPosDat = new XMLHttpRequest();
     HttpPosDat.open("GET", urlPos);
@@ -89,18 +91,22 @@ function getLatestPosition(flightnumber) {
 	    var latitude = posDat[i].latitude;
 	    var longitude = posDat[i].longitude;
 	    var altitude = posDat[i].altitude;
-	    addCoord(flightId, latitude, longitude, altitude);
-	}
-    }
+	    addCoord(flightId, latitude, longitude, altitude, time, operatorId, rpasId);
+      addPolyLinePath(posDat);
+  	}
+  }
 }
 
 
-function addCoord(flightId, longitude, latitude, altitude){
+function addCoord(flightId, longitude, latitude, altitude, time, operatorId, rpasId){
     var sourceExists = false;
     var droneIcon = getIcon();
     var marker = L.marker([longitude, latitude], {icon: droneIcon});
-    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString());
+    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString() + "<br>Time: " + time.toString() + "<br>Operator id: " + operatorId.toString() + "<br>Rpas id: " + rpasId.toString());
     marker.on('mouseover', function(){
+	marker.openPopup();
+	});
+    marker.on('click', function() {
 	marker.openPopup();
     });
     marker.addTo(mymap)
@@ -138,12 +144,49 @@ function getIcon() {
     return icon;
 }
 
+
+//If the "Enable flight path" checkbox is unchecked, remove all polylines.
+function flighPathCbClick(cb) {
+  pathsAreActive = cb.checked;
+  if(cb.checked == false){
+    clearPolyLines();
+  }
+}
+
+
+function clearPolyLines() {
+    for(i in mymap._layers) {
+        if(mymap._layers[i]._path != undefined) {
+            try {
+                mymap.removeLayer(mymap._layers[i]);
+            }
+            catch(e) {
+                console.log("problem with " + e + mymap._layers[i]);
+            }
+        }
+    }
+}
+
+
+function addPolyLinePath(flight) {
+  var latlngs=[];
+  if(pathsAreActive == true){
+    var position;
+    for(i = 0; i < flight.length ;i++){
+      position = [flight[i].latitude, flight[i].longitude];
+      latlngs.push(position);
+    }
+  }
+    var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
+}
+
+
 function addNoFlightZone() {
     var polygon = L.polygon([
-	[59.131090, 11.355795],
-	[59.130055, 11.355827],
-	[59.130099, 11.354003],
-	[59.131233, 11.354314]
+	[59.142107, 11.293188],
+	[59.143426, 11.281618],
+	[59.138115, 11.281169],
+	[59.137193, 11.291610]
     ]);
 
     polygon.setStyle({color: 'red',
