@@ -45,7 +45,7 @@ function startMap() {
     maxZoom: 18,
     id: 'mapbox.streets',
     accessToken: 'pk.eyJ1Ijoic2thcm5pbmciLCJhIjoiY2p1YjM5dnQxMDhsMzQ0cGk1NDNzeDN6YSJ9.Zmo1sjz7dnIR-1QVDo1SYA',
-    style: 'mapbox://styles/mapbox/satellite-v9'	
+    style: 'mapbox://styles/mapbox/satellite-v9'
     }).addTo(mymap);
 }
 
@@ -194,4 +194,5 @@ function addNoFlightZone() {
     polygon.setStyle({color: 'red',
 		      fillColor: '#f03',
 		      fillOpacity: 0.1}).addTo(mymap);
+    polygon.bindPopup("No fly zone: Halden fengsel");
 }
