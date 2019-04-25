@@ -105,6 +105,9 @@ function addCoord(flightId, longitude, latitude, altitude, time, operatorId, rpa
     marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString() + "<br>Time: " + time.toString() + "<br>Operator id: " + operatorId.toString() + "<br>Rpas id: " + rpasId.toString());
     marker.on('mouseover', function(){
 	marker.openPopup();
+	});
+    marker.on('click', function() {
+	marker.openPopup();
     });
     marker.addTo(mymap)
     addNoFlightZone();
