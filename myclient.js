@@ -67,13 +67,13 @@ HttpFlight.onreadystatechange=(e)=> {
 	    var isActive = flights[i].is_active;
 	    var rpasId = flights[i].rpas_id;
 	    //Gets newest coordinates for each flight
-	    getLatestPosition(flightnumber)
+	    getLatestPosition(flightnumber, operatorId, rpasId)
 	}
     }
 }
 
 
-function getLatestPosition(flightnumber) {
+function getLatestPosition(flightnumber, operatorId, rpasId) {
     var urlPos = "http://dronetracker.tk:5000/api/flight/" + flightnumber + "/position_data";
     var HttpPosDat = new XMLHttpRequest();
     HttpPosDat.open("GET", urlPos);
@@ -91,18 +91,18 @@ function getLatestPosition(flightnumber) {
 	    var latitude = posDat[i].latitude;
 	    var longitude = posDat[i].longitude;
 	    var altitude = posDat[i].altitude;
-	    addCoord(flightId, latitude, longitude, altitude, time);
+	    addCoord(flightId, latitude, longitude, altitude, time, operatorId, rpasId);
       addPolyLinePath(posDat);
   	}
   }
 }
 
 
-function addCoord(flightId, longitude, latitude, altitude, time){
+function addCoord(flightId, longitude, latitude, altitude, time, operatorId, rpasId){
     var sourceExists = false;
     var droneIcon = getIcon();
     var marker = L.marker([longitude, latitude], {icon: droneIcon});
-    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString() + "<br>Time: " + time.toString());
+    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString() + "<br>Time: " + time.toString() + "<br>Operator id: " + operatorId.toString() + "<br>Rpas id: " + rpasId.toString());
     marker.on('mouseover', function(){
 	marker.openPopup();
     });
