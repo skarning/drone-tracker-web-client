@@ -91,18 +91,18 @@ function getLatestPosition(flightnumber) {
 	    var latitude = posDat[i].latitude;
 	    var longitude = posDat[i].longitude;
 	    var altitude = posDat[i].altitude;
-	    addCoord(flightId, latitude, longitude, altitude);
+	    addCoord(flightId, latitude, longitude, altitude, time);
       addPolyLinePath(posDat);
   	}
   }
 }
 
 
-function addCoord(flightId, longitude, latitude, altitude){
+function addCoord(flightId, longitude, latitude, altitude, time){
     var sourceExists = false;
     var droneIcon = getIcon();
     var marker = L.marker([longitude, latitude], {icon: droneIcon});
-    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString());
+    marker.bindPopup("Flightnumber: " + flightId + "<br>Altitude: " + altitude.toString() + "<br>Time: " + time.toString());
     marker.on('mouseover', function(){
 	marker.openPopup();
     });
