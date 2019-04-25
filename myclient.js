@@ -19,6 +19,7 @@ function init() {
 function initMap() {
     startMap();
     getLocation();
+    addNoFlightZone();
 }
 
 
@@ -110,7 +111,6 @@ function addCoord(flightId, longitude, latitude, altitude, time, operatorId, rpa
 	marker.openPopup();
     });
     marker.addTo(mymap)
-    addNoFlightZone();
     for(var i = 0; i < sources.length; i++){
 	if(flightId === sources[i].flightId) {
 	    mymap.removeLayer(sources[i].marker)
