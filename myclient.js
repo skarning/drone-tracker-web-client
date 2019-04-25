@@ -179,7 +179,7 @@ function addPolyLinePath(flight) {
       latlngs.push(position);
     }
   }
-    var polyline = L.polyline(latlngs, {color: 'red'}).addTo(mymap);
+    var polyline = L.polyline(latlngs, {color: '#FFD400', stroke: true, lineJoin: 'round'}).addTo(mymap);
 }
 
 
